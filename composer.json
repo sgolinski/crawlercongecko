@@ -1,0 +1,19 @@
+{
+    "name": "szymon/crawler-coin-gecko",
+    "autoload": {
+        "psr-4": {
+            "CrawlerCoinGecko\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "sgolinski",
+            "email": "simon.golinski@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/panther": "^2.0",
+        "symfony/css-selector": "^6.0",
+        "alek13/slack": "^2.2"
+    }
+}
