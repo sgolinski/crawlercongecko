@@ -37,9 +37,12 @@ class Coingecko
     public function checkIfIsBscAndSendMessage()
     {
         foreach ($this->currentRound as $coin) {
+            assert($coin instanceof Token);
+            if ($coin->mainet == 'bsc') {
                 $message = new Message();
                 $message->setText($coin->getDescription());
                 $this->slack->sendMessage($message);
+            }
         }
     }
 
