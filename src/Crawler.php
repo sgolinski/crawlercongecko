@@ -70,9 +70,7 @@ class Crawler
                 ->getText();
 
             $percent = (float)$percent;
-            if ($percent < -20) {
-                $this->returnArray[] = new Token($name, $price, $percent, $link);
-            }
+            $this->returnArray[] = new Token($name, $price, $percent, $link);
 
         }
     }
@@ -101,6 +99,7 @@ class Crawler
             if ($address != '' && $chainID == '56') {
                 $token->setMainet('bsc');
                 $token->setAddress($address);
+                file_put_contents('coins_from_coingecko.txt', trim(strstr("/handelsplatz",$token->getCoingeckoLink())).PHP_EOL, FILE_APPEND);
             }
         }
     }

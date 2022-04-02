@@ -3,6 +3,7 @@
 namespace CrawlerCoinGecko;
 
 use Exception;
+use Maknz\Slack\Attachment;
 use Maknz\Slack\Client as SlackClient;
 use Maknz\Slack\Message;
 
@@ -38,7 +39,7 @@ class Coingecko
     {
         foreach ($this->currentRound as $coin) {
             assert($coin instanceof Token);
-            if ($coin->mainet == 'bsc') {
+            if ($coin->mainet == 'bsc' && $coin->percent < -20) {
                 $message = new Message();
                 $message->setText($coin->getDescription());
                 $this->slack->sendMessage($message);
@@ -84,6 +85,19 @@ class Coingecko
         } else {
             return $arr1;
         }
+    }
+
+    public function sendAttachment($file)
+    {
+        $arr = file_get_contents('coins_from_coingecko.txt');
+        $this->slack
+            ->attach([
+                'fallback' => 'List of coins.',
+                'text' => $arr,
+                'author_name' => 'coingecko',
+                'author_link' => 'crawlercoingecko',
+            ])->to('#allnotification')->send(date("F j, Y, g:i a"));
+
     }
 
 }

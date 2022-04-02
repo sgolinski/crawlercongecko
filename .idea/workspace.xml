@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/last_rounded_coins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/last_rounded_coins.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +67,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/crawler" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../PhpstormProjects/alertCMC" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -91,6 +89,8 @@
       <workItem from="1648420695381" duration="19000" />
       <workItem from="1648666993070" duration="1524000" />
       <workItem from="1648671701548" duration="4000" />
+      <workItem from="1648674568059" duration="755000" />
+      <workItem from="1648757901426" duration="34000" />
     </task>
     <servers />
   </component>
