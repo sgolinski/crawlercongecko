@@ -26,5 +26,6 @@ echo 'Downloading information about large movers from last hour ' . date("F j, Y
 $count = count(explode(',', file_get_contents('coins_from_coingecko.txt')));
 if ($count >= 500) {
     $cmc->sendAttachment(file_get_contents('coins_from_coingecko.txt'));
+    unlink('coins_from_coingecko.txt');
 }
 sleep(30);
