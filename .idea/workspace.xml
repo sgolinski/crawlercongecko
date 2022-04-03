@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/PantherClientSingleton.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coins_from_coingecko.txt" beforeDir="false" afterPath="$PROJECT_DIR$/coins_from_coingecko.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/last_rounded_coins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/last_rounded_coins.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Coingecko.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Coingecko.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Crawler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Crawler.php" afterDir="false" />
-    </list>
+    <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -106,6 +98,7 @@
       <workItem from="1649010455218" duration="1004000" />
       <workItem from="1649012165595" duration="644000" />
       <workItem from="1649015510546" duration="39000" />
+      <workItem from="1649016599079" duration="23000" />
     </task>
     <servers />
   </component>
