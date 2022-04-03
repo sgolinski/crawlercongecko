@@ -39,7 +39,7 @@ class Coingecko
     {
         foreach ($this->currentRound as $coin) {
             assert($coin instanceof Token);
-            if ($coin->mainet == 'bsc' && $coin->percent < -20) {
+            if ($coin->mainet == 'bsc' && $coin->percent < -30) {
                 $message = new Message();
                 $message->setText($coin->getDescription());
                 $this->slack->sendMessage($message);

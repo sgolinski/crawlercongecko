@@ -11,8 +11,8 @@ use Symfony\Component\Panther\Client as PantherClient;
 class Crawler
 {
     private PantherClient $client;
-
     private array $returnArray;
+    public array $linksForCoinGecko;
 
     public function getReturnArray(): array
     {
@@ -21,8 +21,9 @@ class Crawler
 
     public function __construct()
     {
-        $this->client = PantherClient::createChromeClient();
+        $this->client = PantherClientSingleton::getChromeClient();
         $this->returnArray = [];
+        $this->linksForCoinGecko = [];
     }
 
     public function invoke()
@@ -30,13 +31,11 @@ class Crawler
         try {
             $this->client->start();
             $this->client->get('https://www.coingecko.com/de/munze/trending?time=h1');
-            sleep(2);
+            sleep(1);
             $content = $this->getContent();
-            sleep(2);
+            sleep(1);
             $this->assignElementsFromContent($content);
-            sleep(2);
             $this->assignDetailInformationToCoin();
-            sleep(2);
         } catch (Exception $exception) {
             echo $exception->getMessage() . PHP_EOL;
         } finally {
@@ -99,7 +98,7 @@ class Crawler
             if ($address != '' && $chainID == '56') {
                 $token->setMainet('bsc');
                 $token->setAddress($address);
-                file_put_contents('coins_from_coingecko.txt', trim(strstr("/handelsplatz",$token->getCoingeckoLink())).PHP_EOL, FILE_APPEND);
+                $this->linksForCoinGecko[] = strstr("/handelsplatz", $token->getCoingeckoLink()) . PHP_EOL;
             }
         }
     }
