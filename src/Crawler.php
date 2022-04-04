@@ -12,7 +12,7 @@ class Crawler
 {
     private PantherClient $client;
     private array $returnArray;
-    public array $linksForCoinGecko;
+    public string $linksForCoinGecko;
 
     public function getReturnArray(): array
     {
@@ -23,7 +23,7 @@ class Crawler
     {
         $this->client = PantherClientSingleton::getChromeClient();
         $this->returnArray = [];
-        $this->linksForCoinGecko = [];
+        $this->linksForCoinGecko = '';
     }
 
     public function invoke()
@@ -69,8 +69,11 @@ class Crawler
                 ->getText();
 
             $percent = (float)$percent;
-            $this->returnArray[] = new Token($name, $price, $percent, $link);
+            $this->linksForCoinGecko .= 'https://www.coingecko.com' . strstr($link, "/handelsplatz", TRUE) . PHP_EOL;
 
+            if ($percent < -30) {
+                $this->returnArray[] = new Token($name, $price, $percent, $link);
+            }
         }
     }
 
@@ -98,9 +101,13 @@ class Crawler
             if ($address != '' && $chainID == '56') {
                 $token->setMainet('bsc');
                 $token->setAddress($address);
-                $this->linksForCoinGecko[] = strstr("/handelsplatz", $token->getCoingeckoLink()) . PHP_EOL;
             }
         }
+    }
+
+    public function getClient(): PantherClient
+    {
+        return $this->client;
     }
 
 }
