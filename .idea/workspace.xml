@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/last_rounded_coins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/last_rounded_coins.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +104,8 @@
       <workItem from="1649016660031" duration="32000" />
       <workItem from="1649018658307" duration="4149000" />
       <workItem from="1649101442451" duration="1396000" />
+      <workItem from="1649105659962" duration="1052000" />
+      <workItem from="1649154644345" duration="6000" />
     </task>
     <servers />
   </component>
