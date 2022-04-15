@@ -12,23 +12,15 @@ $cmc = new Coingecko();
 $crawler->invoke();
 $currentCoins = $crawler->getReturnArray();
 
-file_put_contents('coins_from_coingecko.txt', $crawler->linksForCoinGecko, FILE_APPEND);
-
 if (empty($currentCoins)) {
     $crawler->getClient()->quit();
     die('Nothing to show' . PHP_EOL);
 }
 
-
 file_put_contents('last_rounded_coins.txt', serialize($currentCoins));
 
 $cmc->invoke($currentCoins);
+
 echo 'Downloading information about large movers from last hour ' . date("F j, Y, g:i a") . PHP_EOL;
 
-$count = count(explode("\n", file_get_contents('coins_from_coingecko.txt')));
-
-if ($count >= 500) {
-    $cmc->sendAttachment(file_get_contents('coins_from_coingecko.txt'));
-    unlink('coins_from_coingecko.txt');
-}
-sleep(30);
+sleep(45);

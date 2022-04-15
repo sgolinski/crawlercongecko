@@ -69,9 +69,8 @@ class Crawler
                 ->getText();
 
             $percent = (float)$percent;
-            $this->linksForCoinGecko .= 'https://www.coingecko.com' . strstr($link, "/handelsplatz", TRUE) . PHP_EOL;
 
-            if ($percent < -30) {
+            if ($percent < -25) {
                 $this->returnArray[] = new Token($name, $price, $percent, $link);
             }
         }

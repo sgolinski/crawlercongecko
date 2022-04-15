@@ -13,11 +13,6 @@ class Token
     public string $coingeckoLink = '';
     public string $bscLink = '';
 
-    public function getBscLink(): string
-    {
-        return $this->bscLink;
-    }
-
     public function setBscLink(string $bscLink): void
     {
         $this->bscLink = $bscLink;
@@ -85,15 +80,11 @@ class Token
 
     public function getDescription(): ?string
     {
-        if ($this->getPoocoinLink() != null) {
-            return "Name: " . $this->getName() . PHP_EOL .
-                "Drop percent: " . $this->getPercent() . "%" . PHP_EOL .
-                "Coingecko: " . $this->getCoingeckoLink() . PHP_EOL .
-                "Poocoin:  " . $this->getPoocoinLink() . PHP_EOL;
-        } else {
-            return "Name: " . $this->getName() . PHP_EOL .
-                "Drop percent: " . $this->getPercent() . "%" . PHP_EOL .
-                "Coingecko: " . $this->getCoingeckoLink() . PHP_EOL;
-        }
+
+        return "Name: " . $this->getName() . PHP_EOL .
+            "Drop percent: " . $this->getPercent() . "%" . PHP_EOL .
+            "Coingecko: " . $this->getCoingeckoLink() . PHP_EOL .
+            "Poocoin:  " . $this->getPoocoinLink() . PHP_EOL;
+
     }
 }

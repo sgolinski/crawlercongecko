@@ -24,11 +24,11 @@ class Coingecko
         $this->takeCoinsFromLastRound();
     }
 
-
     public function invoke($coins): void
     {
         $this->setCurrentCoins($coins);
         if (empty($this->currentRound)) {
+            PantherClientSingleton::getChromeClient()->quit();
             die('Nothing to show' . PHP_EOL);
         }
         $this->currentRound = self::removeDuplicates($this->currentRound, $this->lastRoundCoins);
@@ -39,7 +39,7 @@ class Coingecko
     {
         foreach ($this->currentRound as $coin) {
             assert($coin instanceof Token);
-            if ($coin->mainet == 'bsc' && $coin->percent < -30) {
+            if ($coin->mainet == 'bsc') {
                 $message = new Message();
                 $message->setText($coin->getDescription());
                 $this->slack->sendMessage($message);
@@ -62,7 +62,6 @@ class Coingecko
     public function setCurrentCoins(array $currentCoins)
     {
         $this->currentRound = $currentCoins;
-
     }
 
     public static function removeDuplicates($arr1, $arr2)
@@ -85,19 +84,6 @@ class Coingecko
         } else {
             return $arr1;
         }
-    }
-
-    public function sendAttachment($file)
-    {
-        $arr = file_get_contents('coins_from_coingecko.txt');
-        $this->slack
-            ->attach([
-                'fallback' => 'List of coins.',
-                'text' => $arr,
-                'author_name' => 'coingecko',
-                'author_link' => 'crawlercoingecko',
-            ])->to('#allnotification')->send(date("F j, Y, g:i a"));
-
     }
 
 }
