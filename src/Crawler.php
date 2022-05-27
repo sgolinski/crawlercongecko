@@ -28,9 +28,10 @@ class Crawler
 
     public function invoke()
     {
+
         try {
             $this->client->start();
-            $this->client->get('https://www.coingecko.com/de/munze/trending?time=h1');
+            $this->client->get('https://www.coingecko.com/en/crypto-gainers-losers?time=h1');
             sleep(1);
             $content = $this->getContent();
             sleep(1);
@@ -45,11 +46,19 @@ class Crawler
 
     private function getContent(): ArrayIterator
     {
-        return $this->client->getCrawler()
-            ->filter('body > div.container > div:nth-child(5) > div:nth-child(2) > div')
-            ->filter('#gecko-table-all > tbody')
-            ->children()
-            ->getIterator();
+        $list = null;
+
+        try {
+            $list = $this->client->getCrawler()
+                ->filter('body > div.container >div:nth-child(7)> div:nth-child(2)')
+                ->filter('#gecko-table-all > tbody')
+                ->children()
+                ->getIterator();
+        } catch (Exception $exception) {
+            echo $exception->getMessage();
+        }
+
+        return $list;
     }
 
     private function assignElementsFromContent(ArrayIterator $content)
@@ -59,7 +68,7 @@ class Crawler
             $name = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(1)'))
                 ->findElement(WebDriverBy::tagName('div'))
                 ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))->getText();
-
+            echo $name . PHP_EOL;
             $link = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
                 ->findElement(WebDriverBy::tagName('a'))
                 ->getAttribute('href');

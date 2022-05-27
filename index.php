@@ -9,6 +9,7 @@ header("Content-Type: text/plain");
 
 $crawler = new Crawler();
 $cmc = new Coingecko();
+
 $crawler->invoke();
 $currentCoins = $crawler->getReturnArray();
 
@@ -23,4 +24,4 @@ $cmc->invoke($currentCoins);
 
 echo 'Downloading information about large movers from last hour ' . date("F j, Y, g:i a") . PHP_EOL;
 
-sleep(45);
+sleep(60);
