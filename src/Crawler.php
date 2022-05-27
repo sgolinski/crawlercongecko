@@ -68,7 +68,6 @@ class Crawler
             $name = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(1)'))
                 ->findElement(WebDriverBy::tagName('div'))
                 ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))->getText();
-            echo $name . PHP_EOL;
             $link = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
                 ->findElement(WebDriverBy::tagName('a'))
                 ->getAttribute('href');
