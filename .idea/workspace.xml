@@ -5,9 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/last_rounded_coins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/last_rounded_coins.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Crawler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Crawler.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

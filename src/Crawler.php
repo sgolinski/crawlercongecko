@@ -77,8 +77,7 @@ class Crawler
                 ->getText();
 
             $percent = (float)$percent;
-
-            if ($percent < -25) {
+            if ($percent < -20) {
                 $this->returnArray[] = new Token($name, $price, $percent, $link);
             }
         }
