@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Crawler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Crawler.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +75,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../PhpstormProjects/dexTrackerCrawler" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -116,6 +116,8 @@
       <workItem from="1649154644345" duration="6000" />
       <workItem from="1649155876144" duration="33000" />
       <workItem from="1649877942512" duration="17000" />
+      <workItem from="1653842482639" duration="668000" />
+      <workItem from="1657976580117" duration="845000" />
     </task>
     <servers />
   </component>
