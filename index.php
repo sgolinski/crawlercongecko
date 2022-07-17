@@ -23,5 +23,3 @@ file_put_contents('last_rounded_coins.txt', serialize($currentCoins));
 $cmc->invoke($currentCoins);
 
 echo 'Downloading information about large movers from last hour ' . date("F j, Y, g:i a") . PHP_EOL;
-
-sleep(60);

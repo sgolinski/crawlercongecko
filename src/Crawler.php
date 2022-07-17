@@ -10,7 +10,7 @@ use Symfony\Component\Panther\Client as PantherClient;
 
 class Crawler
 {
-    private PantherClient $client;
+    private $client;
     private array $returnArray;
     public string $linksForCoinGecko;
 
@@ -21,7 +21,7 @@ class Crawler
 
     public function __construct()
     {
-        $this->client = PantherClientSingleton::getChromeClient();
+        $this->client = null;
         $this->returnArray = [];
         $this->linksForCoinGecko = '';
     }
@@ -30,11 +30,11 @@ class Crawler
     {
 
         try {
+            echo "Start crawling " . date("F j, Y, g:i:s a") . PHP_EOL;
+            $this->client = PantherClient::createChromeClient();
             $this->client->start();
             $this->client->get('https://www.coingecko.com/en/crypto-gainers-losers?time=h1');
-            sleep(1);
             $content = $this->getContent();
-            sleep(1);
             $this->assignElementsFromContent($content);
             $this->assignDetailInformationToCoin();
         } catch (Exception $exception) {

@@ -28,7 +28,6 @@ class Coingecko
     {
         $this->setCurrentCoins($coins);
         if (empty($this->currentRound)) {
-            PantherClientSingleton::getChromeClient()->quit();
             die('Nothing to show' . PHP_EOL);
         }
         $this->currentRound = self::removeDuplicates($this->currentRound, $this->lastRoundCoins);
