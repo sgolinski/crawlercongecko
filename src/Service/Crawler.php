@@ -58,6 +58,7 @@ class Crawler
 
     private function getContent(): ?ArrayIterator
     {
+        echo 'Start getting content ' . date('H:i:s', time()) . PHP_EOL;
         $list = null;
         try {
             $list = $this->client->getCrawler()
@@ -69,6 +70,7 @@ class Crawler
             echo $exception->getMessage();
         }
 
+        echo 'Content downloaded ' . date('H:i:s', time()) . PHP_EOL;
         return $list;
     }
 
@@ -136,7 +138,7 @@ class Crawler
 
     private function assignChainAndAddress(): void
     {
-        echo 'Start assignig chain and address ' . date('H:i:s', time()) . PHP_EOL;
+        echo 'Start assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
 
         foreach ($this->tokensWithoutInformation as $token) {
 
@@ -177,6 +179,7 @@ class Crawler
                 continue;
             }
         }
+        $this->tokensWithoutInformation = [];
         echo 'Finish assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
     }
 
