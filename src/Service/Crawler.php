@@ -46,8 +46,8 @@ class Crawler
             $this->createTokensFromContent($content);
             $this->assignChainAndAddress();
 
-            FileWriter::write(self::$lastRoundedCoins);
-            FileWriter::writeAlreadyShown(self::$recordedCoins);
+            FileWriter::writeTokensFromLastCronJob(self::$lastRoundedCoins);
+            FileWriter::writeTokensToListTokensAlreadyProcessed(self::$recordedCoins);
 
         } catch (Exception $exception) {
             echo $exception->getFile() . ' ' . $exception->getLine() . PHP_EOL;
@@ -224,7 +224,7 @@ class Crawler
 
     private function startClient(): void
     {
-        echo "Start crawling " . date("F j, Y, g:i:s a") . PHP_EOL;
+        echo "Start crawling " . date("F j, Y, 'H:i:s ") . PHP_EOL;
         $this->client = PantherClient::createChromeClient();
         $this->client->start();
         $this->client->get(self::URL);
