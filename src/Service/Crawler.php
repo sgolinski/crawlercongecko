@@ -22,20 +22,22 @@ class Crawler
 {
     private PantherClient $client;
 
-    private static array $lastRoundedCoins;
+    private array $tokensFromLastCronjob;
 
     private array $tokensWithInformation = [];
 
     private array $tokensWithoutInformation = [];
 
-    public static array $recordedCoins;
+    public array $tokensFromCurrentCronjob;
+
+    public array $allTokensProcessed;
 
     private const URL = 'https://www.coingecko.com/en/crypto-gainers-losers?time=h1';
 
     public function __construct()
     {
-        self::$lastRoundedCoins = FileReader::readTokensFromLastCronJob();
-        self::$recordedCoins = FileReader::readTokensAlreadyProcessed();
+        $this->tokensFromLastCronjob = FileReader::readTokensFromLastCronJob();
+        $this->allTokensProcessed = FileReader::readTokensAlreadyProcessed();
     }
 
     public function invoke(): void
@@ -46,8 +48,8 @@ class Crawler
             $this->createTokensFromContent($content);
             $this->assignChainAndAddress();
 
-            FileWriter::writeTokensFromLastCronJob(self::$lastRoundedCoins);
-            FileWriter::writeTokensToListTokensAlreadyProcessed(self::$recordedCoins);
+            FileWriter::writeTokensFromLastCronJob($this->tokensFromCurrentCronjob);
+            FileWriter::writeTokensToListTokensAlreadyProcessed($this->allTokensProcessed);
 
         } catch (Exception $exception) {
             echo $exception->getFile() . ' ' . $exception->getLine() . PHP_EOL;
@@ -93,25 +95,23 @@ class Crawler
                 $name = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(1)'))
                     ->findElement(WebDriverBy::tagName('div'))
                     ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))->getText();
-
                 $name = Name::fromString($name);
 
-                $fromLastRound = $this->checkIfTokenIsNotFromLastRound($name);
+                $tokenFromLastRound = $this->returnTokenIfIsFromLastCronjob($name);
 
-                if ($fromLastRound) {
+                if ($tokenFromLastRound !== null) {
+                    $this->tokensFromCurrentCronjob[] = $tokenFromLastRound;
                     continue;
                 }
 
                 $find = $this->returnTokenIfIsRecorded($name);
 
-                if ($find) {
-
+                if ($find !== null) {
                     $currentTimestamp = time();
                     $find->setDropPercent($percent);
                     $find->setCreated($currentTimestamp);
                     $this->tokensWithInformation[] = $find;
-                    self::$lastRoundedCoins[] = $find;
-                    continue;
+                    $this->tokensFromCurrentCronjob[] = $find;
 
                 } else {
                     $url = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
@@ -174,8 +174,8 @@ class Crawler
                     );
 
                     $this->tokensWithInformation[] = $newToken;
-                    self::$lastRoundedCoins[] = $newToken;
-                    self::$recordedCoins[] = $newToken;
+                    $this->tokensFromCurrentCronjob[] = $newToken;
+                    $this->allTokensProcessed[] = $newToken;
                 }
             } catch (Exception $exception) {
                 continue;
@@ -185,29 +185,26 @@ class Crawler
         echo 'Finish assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
     }
 
-    private function checkIfTokenIsNotFromLastRound(Name $name): bool
+    private function returnTokenIfIsFromLastCronjob(
+        Name $name
+    ): ?Token
     {
-        $currentTime = time();
-        foreach (self::$lastRoundedCoins as $showedAlreadyToken) {
+        foreach ($this->tokensFromLastCronjob as $showedAlreadyToken) {
             if ($showedAlreadyToken->getName()->asString() === $name->asString()) {
-                if ($currentTime - $showedAlreadyToken->getCreated() > 7200) {
-                    return false;
-                }
-
-                return true;
+                return $showedAlreadyToken;
             }
         }
-        return false;
+        return null;
     }
 
     private function returnTokenIfIsRecorded(
         $name
     ): ?Token
     {
-        foreach (self::$recordedCoins as $existedToken) {
-            assert($existedToken instanceof Token);
-            if ($existedToken->getName()->asString() === $name->asString()) {
-                return $existedToken;
+        foreach ($this->allTokensProcessed as $recordedToken) {
+            assert($recordedToken instanceof Token);
+            if ($recordedToken->getName()->asString() === $name->asString()) {
+                return $recordedToken;
             }
         }
         return null;
