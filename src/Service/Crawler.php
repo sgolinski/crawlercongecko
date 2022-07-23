@@ -125,10 +125,8 @@ class Crawler
                     $currentTimestamp = time();
                     $address = Address::fromString('');
                     $chain = Chain::fromString('');
-                    $token = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
+                    $this->tokensWithoutInformation[] = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
 
-                    $this->tokensWithoutInformation[] = $token;
-                    self::$lastRoundedCoins[] = $token;
                 }
             } catch
             (Exception $e) {
