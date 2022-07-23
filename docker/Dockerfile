@@ -42,6 +42,8 @@ ADD /src src
 ADD /index.php index.php
 ADD /composer.json composer.json
 ADD /composer.lock composer.lock
+ADD /last_rounded_coins.txt last_rounded_coins.txt
+ADD /tokens_already_recorded.txt tokens_already_recorded.txt
 
 RUN php composer install
 

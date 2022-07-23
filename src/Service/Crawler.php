@@ -169,7 +169,8 @@ class Crawler
                         $token->getUrl(),
                         $address,
                         $token->getCreated(),
-                        $chain);
+                        $chain
+                    );
 
                     $this->tokensWithInformation[] = $newToken;
                     self::$lastRoundedCoins[] = $newToken;
@@ -192,9 +193,9 @@ class Crawler
                 if ($currentTime - $showedAlreadyToken->getCreated() > 3600) {
                     return false;
                 }
-                if ($showedAlreadyToken->getPercent()->asFloat() !== $percent->asFloat()) {
-                    return false;
-                }
+//                if ($showedAlreadyToken->getPercent()->asFloat() !== $percent->asFloat()) {
+//                    return false;
+//                }
                 return true;
             }
         }
