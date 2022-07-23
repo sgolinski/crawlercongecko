@@ -28,7 +28,7 @@ class Crawler
 
     private array $tokensWithoutInformation = [];
 
-    public array $tokensFromCurrentCronjob;
+    public array $tokensFromCurrentCronjob = [];
 
     public array $allTokensProcessed;
 

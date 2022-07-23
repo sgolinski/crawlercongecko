@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Service/Crawler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Crawler.php" afterDir="false" />
-    </list>
+    <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="chang logic to remove bug" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -125,8 +123,16 @@
       <workItem from="1658518750962" duration="811000" />
       <workItem from="1658529303352" duration="20523000" />
       <workItem from="1658588427861" duration="6132000" />
-      <workItem from="1658609048281" duration="4032000" />
+      <workItem from="1658609048281" duration="4792000" />
     </task>
+    <task id="LOCAL-00001" summary="chang logic to remove bug">
+      <created>1658614175950</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1658614175950</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -142,5 +148,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="chang logic to remove bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="chang logic to remove bug" />
   </component>
 </project>
