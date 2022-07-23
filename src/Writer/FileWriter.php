@@ -12,10 +12,10 @@ class FileWriter implements Writer
 
     public static function writeTokensToListTokensAlreadyProcessed(array $makers): void
     {
-        file_put_contents('tokens_already_recorded.txt', serialize($makers));
+        file_put_contents('/mnt/app/tokens_already_recorded.txt', serialize($makers));
     }
     public static function writeOne(string $alert)
     {
-        file_put_contents('tokens_alerts.txt', $alert . PHP_EOL, FILE_APPEND);
+        file_put_contents('/mnt/app/tokens_alerts.txt', $alert . PHP_EOL, FILE_APPEND);
     }
 }
