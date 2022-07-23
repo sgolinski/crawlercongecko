@@ -1,14 +1,13 @@
 <?php
 
-namespace CrawlerCoinGecko\service;
+namespace CrawlerCoinGecko\Service;
 
-use CrawlerCoinGecko\BscToken;
-use Exception;
+use CrawlerCoinGecko\Factory;
+use CrawlerCoinMarketCap\Entity\Token;
 use Maknz\Slack\Client as SlackClient;
-use Maknz\Slack\Message;
 
 
-class AlertService
+class Alert
 {
     private SlackClient $slack;
 
@@ -16,21 +15,20 @@ class AlertService
 
     public function __construct()
     {
-        $this->slack = new SlackClient(self::HOOK);
+        $this->slack = Factory::createSlackClient(self::HOOK);
     }
 
-
-    public function sendMessageWhenIsBsc(array $currentRound)
+    public function sendMessageWhenIsBsc(
+        array $currentRound
+    ): void
     {
         foreach ($currentRound as $coin) {
-            assert($coin instanceof BscToken);
+            assert($coin instanceof Token);
             if ($coin->chain !== null) {
-                $message = new Message();
-                $message->setText($coin->getDescription());
+                $message = Factory::createSlackMessage()->setText($coin->alert());
                 $this->slack->sendMessage($message);
             }
         }
     }
-
 
 }

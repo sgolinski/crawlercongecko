@@ -1,17 +1,16 @@
 <?php
 
-use CrawlerCoinGecko\service\AlertService;
-use CrawlerCoinGecko\service\CrawlerService;
+use CrawlerCoinGecko\Factory;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 header("Content-Type: text/plain");
 
-$crawler = new CrawlerService();
-$cmc = new AlertService();
+$crawler = Factory::createCrawlerService();
+$cmc = Factory::createAlertService();
 
 $crawler->invoke();
-$currentCoins = $crawler->getTokensWithInformations();
+$currentCoins = $crawler->getTokensWithInformation();
 
 if (empty($currentCoins)) {
     $crawler->getClient()->quit();

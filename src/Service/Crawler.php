@@ -1,9 +1,9 @@
 <?php
 
-namespace CrawlerCoinGecko\service;
+namespace CrawlerCoinGecko\Service;
 
 use ArrayIterator;
-use CrawlerCoinGecko\BscToken;
+use CrawlerCoinGecko\Factory;
 use CrawlerCoinGecko\ValueObjects\Address;
 use CrawlerCoinGecko\ValueObjects\Chain;
 use CrawlerCoinGecko\ValueObjects\DropPercent;
@@ -11,43 +11,42 @@ use CrawlerCoinGecko\ValueObjects\Name;
 use CrawlerCoinGecko\ValueObjects\Price;
 use CrawlerCoinGecko\ValueObjects\Url;
 use CrawlerCoinGecko\Writer\FileWriter;
+use CrawlerCoinMarketCap\Entity\Token;
 use Exception;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
 use Symfony\Component\Panther\Client as PantherClient;
 
-class CrawlerService
+class Crawler
 {
     private PantherClient $client;
 
     private static array $lastRoundedCoins;
 
-    private array $tokensWithInformations = [];
+    private array $tokensWithInformation = [];
 
     private array $tokensWithoutInformation = [];
 
-    public static array $recorded_coins;
+    public static array $recordedCoins;
 
     private const URL = 'https://www.coingecko.com/en/crypto-gainers-losers?time=h1';
 
     public function __construct()
     {
         self::$lastRoundedCoins = [];
-        self::$recorded_coins = [];
+        self::$recordedCoins = [];
     }
 
-
-    public function invoke()
+    public function invoke(): void
     {
         try {
             $this->startClient();
             $content = $this->getContent();
-            $this->assignElementsFromContent($content);
-            $this->assignDetailInformationToCoin();
+            $this->createTokensFromContent($content);
+            $this->assignChainAndAddress();
 
-            $uniqueLastRoundedCoins = $this->removeOldTokensAndRemoveDuplicates(self::$lastRoundedCoins);
-            FileWriter::write($uniqueLastRoundedCoins);
-            FileWriter::writeAlreadyShown(self::$recorded_coins);
+            FileWriter::write($this->removeOldTokensAndDuplicates());
+            FileWriter::writeAlreadyShown(self::$recordedCoins);
 
         } catch (Exception $exception) {
             echo $exception->getFile() . ' ' . $exception->getLine() . PHP_EOL;
@@ -72,12 +71,11 @@ class CrawlerService
         return $list;
     }
 
-    private function assignElementsFromContent(ArrayIterator $content)
+    private function createTokensFromContent(ArrayIterator $content): void
     {
         foreach ($content as $webElement) {
 
             try {
-
                 assert($webElement instanceof RemoteWebElement);
                 $percent = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(4)'))
                     ->getText();
@@ -97,13 +95,14 @@ class CrawlerService
                 if ($fromLastRound) {
                     continue;
                 }
-                $find = $this->checkIfIsNotRecorded($name);
+
+                $find = $this->checkIfIsNotStored($name);
 
                 if ($find) {
                     $currentTimestamp = time();
                     $find->setDropPercent($percent);
                     $find->setCreated($currentTimestamp);
-                    $this->tokensWithInformations[] = $find;
+                    $this->tokensWithInformation[] = $find;
                 } else {
                     $url = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
                         ->findElement(WebDriverBy::tagName('a'))
@@ -117,7 +116,7 @@ class CrawlerService
                     $currentTimestamp = time();
                     $address = Address::fromString('');
                     $chain = Chain::fromString('');
-                    $this->tokensWithoutInformation[] = new BscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
+                    $this->tokensWithoutInformation[] = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
                 }
             } catch
             (Exception $e) {
@@ -127,14 +126,13 @@ class CrawlerService
         }
     }
 
-    private function assignDetailInformationToCoin()
+    private function assignChainAndAddress(): void
     {
         foreach ($this->tokensWithoutInformation as $token) {
 
-            assert($token instanceof BscToken);
+            assert($token instanceof Token);
             $this->client->get($token->getUrl()->asString());
             $this->client->refreshCrawler();
-
 
             $address = $this->client->getCrawler()
                 ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
@@ -148,25 +146,30 @@ class CrawlerService
 
 
             if ($address != '' && $chain == '56') {
+
                 $chain = Chain::fromString('bsc');
-                $newToken = new BscToken($token->getName(), $token->getPrice(), $token->getPercent(), $token->getUrl(), $address, $token->getCreated(), $chain);
-                $this->tokensWithInformations[] = $newToken;
+
+                $newToken = Factory::createBscToken(
+                    $token->getName(),
+                    $token->getPrice(),
+                    $token->getPercent(),
+                    $token->getUrl(),
+                    $address,
+                    $token->getCreated(),
+                    $chain);
+
+                $this->tokensWithInformation[] = $newToken;
                 self::$lastRoundedCoins[] = $newToken;
-                self::$recorded_coins[] = $newToken;
+                self::$recordedCoins[] = $newToken;
             }
         }
-    }
-
-    public function getClient(): PantherClient
-    {
-        return $this->client;
     }
 
     private function checkIfTokenIsNotFromLastRound($name): bool
     {
         $currentTime = time();
         foreach (self::$lastRoundedCoins as $showedAlreadyToken) {
-            assert($showedAlreadyToken instanceof BscToken);
+            assert($showedAlreadyToken instanceof Token);
             if ($showedAlreadyToken->getName()->asString() === $name->asString()) {
                 if ($currentTime - $showedAlreadyToken->getCreated() > 3600) {
                     return false;
@@ -177,11 +180,12 @@ class CrawlerService
         return false;
     }
 
-    private function checkIfIsNotRecorded($name): ?BscToken
+    private function checkIfIsNotStored(
+        $name
+    ): ?Token
     {
-
-        foreach (self::$recorded_coins as $existedToken) {
-            assert($existedToken instanceof BscToken);
+        foreach (self::$recordedCoins as $existedToken) {
+            assert($existedToken instanceof Token);
             if ($existedToken->getName()->asString() === $name->asString()) {
                 return $existedToken;
             }
@@ -189,52 +193,49 @@ class CrawlerService
         return null;
     }
 
-    /**
-     * @return void
-     */
-    public function startClient(): void
+    private function removeOldTokensAndDuplicates(): array
+    {
+        $uniqueArray = [];
+        $currentTime = time();
+        foreach (self::$lastRoundedCoins as $token) {
+            assert($token instanceof Token);
+            if (empty($notUnique)) {
+                $uniqueArray[] = $token;
+            }
+
+            foreach ($uniqueArray as $uniqueProve) {
+                if ($token->getName()->asString() === $uniqueProve->getName()->asString()) {
+                    if ($currentTime - $token->getCreated() > 7200) {
+                        continue;
+                    }
+                    if ($token->getCreated() > $uniqueProve->created) {
+                        $uniqueProve->setCreated($token->created);
+                        continue;
+                    }
+                }
+            }
+            $uniqueArray[] = $token;
+        }
+        return $uniqueArray;
+
+    }
+
+    public function getTokensWithInformation(): array
+    {
+        return $this->tokensWithInformation;
+    }
+
+    public function getClient(): PantherClient
+    {
+        return $this->client;
+    }
+
+    private function startClient(): void
     {
         echo "Start crawling " . date("F j, Y, g:i:s a") . PHP_EOL;
         $this->client = PantherClient::createChromeClient();
         $this->client->start();
         $this->client->get(self::URL);
     }
-
-    private function removeOldTokensAndRemoveDuplicates(array $lastRoundedCoins): array
-    {
-        {
-            $uniqueArray = [];
-            $currentTime = time();
-            foreach ($lastRoundedCoins as $token) {
-                assert($token instanceof BscToken);
-                if (empty($notUnique)) {
-                    $uniqueArray[] = $token;
-                }
-
-                foreach ($uniqueArray as $uniqueProve) {
-                    if ($token->getName()->asString() === $uniqueProve->getName()->asString()) {
-                        if ($currentTime - $token->getCreated() > 7200) {
-                            continue;
-                        }
-                        if ($token->getCreated() > $uniqueProve->created) {
-                            $uniqueProve->setCreated($token->created);
-                            continue;
-                        }
-                    }
-                }
-                $uniqueArray[] = $token;
-            }
-            return $uniqueArray;
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getTokensWithInformations(): array
-    {
-        return $this->tokensWithInformations;
-    }
-
 
 }
