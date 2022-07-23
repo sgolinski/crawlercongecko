@@ -85,7 +85,7 @@ class Crawler
                     ->getText();
                 $percent = DropPercent::fromFloat((float)$percent);
 
-                if ($percent->asFloat() > -19.0) {
+                if ($percent->asFloat() > -15.0) {
                     continue;
                 }
 
@@ -94,7 +94,7 @@ class Crawler
                     ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))->getText();
 
                 $name = Name::fromString($name);
-                $fromLastRound = $this->checkIfTokenIsNotFromLastRound($name, $percent);
+                $fromLastRound = $this->checkIfTokenIsNotFromLastRound($name);
 
                 if ($fromLastRound) {
                     continue;
@@ -184,18 +184,17 @@ class Crawler
         echo 'Finish assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
     }
 
-    private function checkIfTokenIsNotFromLastRound(Name $name, DropPercent $percent): bool
+    private function checkIfTokenIsNotFromLastRound(Name $name): bool
     {
+
         $currentTime = time();
         foreach (self::$lastRoundedCoins as $showedAlreadyToken) {
-            assert($showedAlreadyToken instanceof Token);
+
             if ($showedAlreadyToken->getName()->asString() === $name->asString()) {
                 if ($currentTime - $showedAlreadyToken->getCreated() > 7200) {
                     return false;
                 }
-//                if ($showedAlreadyToken->getPercent()->asFloat() !== $percent->asFloat()) {
-//                    return false;
-//                }
+
                 return true;
             }
         }
