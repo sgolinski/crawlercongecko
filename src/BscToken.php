@@ -11,7 +11,7 @@ use CrawlerCoinGecko\ValueObjects\Name;
 use CrawlerCoinGecko\ValueObjects\Price;
 use CrawlerCoinGecko\ValueObjects\Url;
 
-class CmcToken
+class BscToken
 {
     public Name $name;
     public Price $price;

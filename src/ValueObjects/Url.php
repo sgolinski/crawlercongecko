@@ -10,7 +10,7 @@ class Url
         string $url
     )
     {
-        $this->url = 'https://coinmarketcap.com' . $url;
+        $this->url = 'https://www.coingecko.com' . $url;
     }
 
     public static function fromString(

@@ -11,15 +11,13 @@ $crawler = new CrawlerService();
 $cmc = new AlertService();
 
 $crawler->invoke();
-$currentCoins = $crawler->getReturnArray();
+$currentCoins = $crawler->getTokensWithInformations();
 
 if (empty($currentCoins)) {
     $crawler->getClient()->quit();
     die('Nothing to show' . PHP_EOL);
 }
 
-file_put_contents('last_rounded_coins.txt', serialize($currentCoins));
-
-$cmc->invoke($currentCoins);
+$cmc->sendMessageWhenIsBsc($currentCoins);
 
 echo 'Downloading information about large movers from last hour ' . date("F j, Y, g:i a") . PHP_EOL;
