@@ -56,9 +56,8 @@ class BscToken implements Token
     {
         return "Name: " . $this->getName()->asString() . PHP_EOL .
             "Drop percent: " . $this->getPercent()->asFloat() . '%' . PHP_EOL .
-            "Cmc: " . $this->getUrl()->asString() . PHP_EOL .
-            "Poocoin:  " . $this->getPoocoinAddress() . PHP_EOL .
-            "Bscscan:  " . $this->getBscscanAddress() . PHP_EOL;
+            "Coingecko: " . $this->getUrl()->asString() . PHP_EOL .
+            "Poocoin:  " . $this->getPoocoinAddress() . PHP_EOL;
     }
 
     public function setDropPercent(DropPercent $dropPercent)
