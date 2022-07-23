@@ -5,7 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/crawlercongecko.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/crawlercongecko.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/last_rounded_coins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/last_rounded_coins.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/BscToken.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/BscToken.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Token.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Token.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Reader/FileReader.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Reader/FileReader.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Reader/Reader.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Reader/Reader.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/Alert.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Alert.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/Crawler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Crawler.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tokens_already_recorded.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tokens_already_recorded.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +61,6 @@
       <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
       <path value="$PROJECT_DIR$/vendor/symfony/dom-crawler" />
       <path value="$PROJECT_DIR$/vendor/guzzlehttp/promises" />
-      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php81" />
       <path value="$PROJECT_DIR$/vendor/symfony/http-client" />
       <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher" />
       <path value="$PROJECT_DIR$/vendor/symfony/css-selector" />
@@ -64,6 +73,7 @@
       <path value="$PROJECT_DIR$/vendor/symfony/var-dumper" />
       <path value="$PROJECT_DIR$/vendor/symfony/error-handler" />
       <path value="$PROJECT_DIR$/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/vendor/masterminds/html5" />
     </include_path>
   </component>
   <component name="ProjectId" id="26zItHv8z8upJsimJ7XCirf4NWi" />
@@ -75,7 +85,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../PhpstormProjects/dexTrackerCrawler" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -86,6 +96,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/Entity" />
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
@@ -121,6 +133,7 @@
       <workItem from="1658065989059" duration="2264000" />
       <workItem from="1658079221707" duration="159000" />
       <workItem from="1658518750962" duration="811000" />
+      <workItem from="1658529303352" duration="12389000" />
     </task>
     <servers />
   </component>

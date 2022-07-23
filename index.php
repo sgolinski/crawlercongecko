@@ -19,4 +19,4 @@ if (empty($currentCoins)) {
 
 $cmc->sendMessageWhenIsBsc($currentCoins);
 
-echo 'Downloading information about large movers from last hour ' . date("F j, Y, g:i a") . PHP_EOL;
+echo 'Downloading information about large movers from last hour ' . date("F j, Y, g:i:s a") . PHP_EOL;

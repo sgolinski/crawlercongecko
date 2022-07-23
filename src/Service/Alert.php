@@ -3,7 +3,7 @@
 namespace CrawlerCoinGecko\Service;
 
 use CrawlerCoinGecko\Factory;
-use CrawlerCoinMarketCap\Entity\Token;
+use CrawlerCoinGecko\Entity\Token;
 use Maknz\Slack\Client as SlackClient;
 
 

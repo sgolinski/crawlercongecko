@@ -4,6 +4,7 @@ namespace CrawlerCoinGecko\Service;
 
 use ArrayIterator;
 use CrawlerCoinGecko\Factory;
+use CrawlerCoinGecko\Reader\FileReader;
 use CrawlerCoinGecko\ValueObjects\Address;
 use CrawlerCoinGecko\ValueObjects\Chain;
 use CrawlerCoinGecko\ValueObjects\DropPercent;
@@ -11,7 +12,7 @@ use CrawlerCoinGecko\ValueObjects\Name;
 use CrawlerCoinGecko\ValueObjects\Price;
 use CrawlerCoinGecko\ValueObjects\Url;
 use CrawlerCoinGecko\Writer\FileWriter;
-use CrawlerCoinMarketCap\Entity\Token;
+use CrawlerCoinGecko\Entity\Token;
 use Exception;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
@@ -33,8 +34,8 @@ class Crawler
 
     public function __construct()
     {
-        self::$lastRoundedCoins = [];
-        self::$recordedCoins = [];
+        self::$lastRoundedCoins = FileReader::readTokensFromLastCronJob();
+        self::$recordedCoins = FileReader::readTokensAlreadyProcessed();
     }
 
     public function invoke(): void
@@ -45,8 +46,8 @@ class Crawler
             $this->createTokensFromContent($content);
             $this->assignChainAndAddress();
 
-            FileWriter::write($this->removeOldTokensAndDuplicatesFromLastRoundedTokens());
-            FileWriter::writeAlreadyShown($this->removeDuplicatesFromRecordedTokens());
+            FileWriter::write(self::$lastRoundedCoins);
+            FileWriter::writeAlreadyShown(self::$recordedCoins);
 
         } catch (Exception $exception) {
             echo $exception->getFile() . ' ' . $exception->getLine() . PHP_EOL;
@@ -55,15 +56,15 @@ class Crawler
         }
     }
 
-    private function getContent(): ArrayIterator
+    private function getContent(): ?ArrayIterator
     {
         $list = null;
         try {
             $list = $this->client->getCrawler()
                 ->filter('body > div.container >div:nth-child(7)> div:nth-child(2)')
-                ->filter('#gecko-table-all > tbody')
-                ->children()
+                ->filter('#gecko-table-all > tbody > tr:nth-child(-n+10)')
                 ->getIterator();
+
         } catch (Exception $exception) {
             echo $exception->getMessage();
         }
@@ -73,23 +74,24 @@ class Crawler
 
     private function createTokensFromContent(ArrayIterator $content): void
     {
+        echo 'Start creating tokens from content ' . date('H:i:s', time()) . PHP_EOL;
         foreach ($content as $webElement) {
-
             try {
                 assert($webElement instanceof RemoteWebElement);
+
                 $percent = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(4)'))
                     ->getText();
                 $percent = DropPercent::fromFloat((float)$percent);
 
-                if ($percent->asFloat() < 5) {
+                if ($percent->asFloat() > 0) {
                     continue;
                 }
 
                 $name = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(1)'))
                     ->findElement(WebDriverBy::tagName('div'))
                     ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))->getText();
-                $name = Name::fromString($name);
 
+                $name = Name::fromString($name);
                 $fromLastRound = $this->checkIfTokenIsNotFromLastRound($name);
 
                 if ($fromLastRound) {
@@ -98,11 +100,14 @@ class Crawler
 
                 $find = $this->checkIfIsNotStored($name);
 
-                if ($find) {
+                if ($find !== null) {
+
                     $currentTimestamp = time();
                     $find->setDropPercent($percent);
                     $find->setCreated($currentTimestamp);
                     $this->tokensWithInformation[] = $find;
+                    self::$lastRoundedCoins[] = $find;
+
                 } else {
                     $url = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
                         ->findElement(WebDriverBy::tagName('a'))
@@ -111,11 +116,13 @@ class Crawler
 
                     $price = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(3)'))
                         ->getText();
+                    $price = str_replace('$', '', $price);
                     $price = Price::fromFloat((float)$price);
 
                     $currentTimestamp = time();
                     $address = Address::fromString('');
                     $chain = Chain::fromString('');
+
                     $this->tokensWithoutInformation[] = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
                 }
             } catch
@@ -124,45 +131,53 @@ class Crawler
                 continue;
             }
         }
+        echo 'Finish creating tokens from content ' . date('H:i:s', time()) . PHP_EOL;
     }
 
     private function assignChainAndAddress(): void
     {
+        echo 'Start assignig chain and address ' . date('H:i:s', time()) . PHP_EOL;
+
         foreach ($this->tokensWithoutInformation as $token) {
 
-            assert($token instanceof Token);
-            $this->client->get($token->getUrl()->asString());
-            $this->client->refreshCrawler();
+            try {
+                assert($token instanceof Token);
+                $this->client->get($token->getUrl()->asString());
+                $this->client->refreshCrawler();
 
-            $address = $this->client->getCrawler()
-                ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
-                ->getAttribute('data-address');
+                $address = $this->client->getCrawler()
+                    ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
+                    ->getAttribute('data-address');
 
-            $address = Address::fromString($address);
+                $address = Address::fromString($address);
 
-            $chain = $this->client->getCrawler()
-                ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
-                ->getAttribute('data-chain-id');
+                $chain = $this->client->getCrawler()
+                    ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
+                    ->getAttribute('data-chain-id');
 
 
-            if ($address != '' && $chain == '56') {
+                if ($address != '' && $chain == '56') {
 
-                $chain = Chain::fromString('bsc');
+                    $chain = Chain::fromString('bsc');
 
-                $newToken = Factory::createBscToken(
-                    $token->getName(),
-                    $token->getPrice(),
-                    $token->getPercent(),
-                    $token->getUrl(),
-                    $address,
-                    $token->getCreated(),
-                    $chain);
+                    $newToken = Factory::createBscToken(
+                        $token->getName(),
+                        $token->getPrice(),
+                        $token->getPercent(),
+                        $token->getUrl(),
+                        $address,
+                        $token->getCreated(),
+                        $chain);
 
-                $this->tokensWithInformation[] = $newToken;
-                self::$lastRoundedCoins[] = $newToken;
-                self::$recordedCoins[] = $newToken;
+                    $this->tokensWithInformation[] = $newToken;
+                    self::$lastRoundedCoins[] = $newToken;
+                    self::$recordedCoins[] = $newToken;
+                }
+            } catch (Exception $exception) {
+                continue;
             }
         }
+        echo 'Finish assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
     }
 
     private function checkIfTokenIsNotFromLastRound($name): bool
@@ -193,58 +208,6 @@ class Crawler
         return null;
     }
 
-    private function removeOldTokensAndDuplicatesFromLastRoundedTokens(): array
-    {
-        $uniqueArray = [];
-        $currentTime = time();
-        foreach (self::$lastRoundedCoins as $token) {
-            assert($token instanceof Token);
-            if (empty($notUnique)) {
-                $uniqueArray[] = $token;
-            }
-
-            foreach ($uniqueArray as $uniqueProve) {
-                if ($token->getName()->asString() === $uniqueProve->getName()->asString()) {
-                    if ($currentTime - $token->getCreated() > 7200) {
-                        break;
-                    }
-                    if ($token->getCreated() > $uniqueProve->created) {
-                        $uniqueProve->setCreated($token->created);
-                        break;
-                    }
-                } else {
-                    $uniqueArray[] = $token;
-                }
-            }
-        }
-        return $uniqueArray;
-    }
-
-    private function removeDuplicatesFromRecordedTokens(): array
-    {
-        $uniqueArray = [];
-
-        foreach (self::$recordedCoins as $token) {
-
-            assert($token instanceof Token);
-            if (empty($notUnique)) {
-                $uniqueArray[] = $token;
-            }
-
-            foreach ($uniqueArray as $uniqueToken) {
-                if ($token->getName()->asString() === $uniqueToken->getName()->asString()) {
-                    if ($token->getCreated() > $uniqueToken->created) {
-                        $uniqueToken->setCreated($token->created);
-                    }
-                    break;
-                } else {
-                    $uniqueToken[] = $token;
-                }
-            }
-
-        }
-        return $uniqueArray;
-    }
 
     public function getTokensWithInformation(): array
     {

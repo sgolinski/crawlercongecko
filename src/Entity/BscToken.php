@@ -8,7 +8,6 @@ use CrawlerCoinGecko\ValueObjects\DropPercent;
 use CrawlerCoinGecko\ValueObjects\Name;
 use CrawlerCoinGecko\ValueObjects\Price;
 use CrawlerCoinGecko\ValueObjects\Url;
-use CrawlerCoinMarketCap\Entity\Token;
 
 class BscToken implements Token
 {
@@ -19,8 +18,6 @@ class BscToken implements Token
     public ?Address $address;
     public Url $url;
     public int $created;
-    public string $poocoinAddress;
-    public string $bscscanAddress;
 
     public function __construct(
         Name        $name,
@@ -35,9 +32,9 @@ class BscToken implements Token
         $this->price = $price;
         $this->percent = $percent;
         $this->url = $url;
-        $this->address = null;
+        $this->address = $address;
         $this->created = $created;
-        $this->chain = null;
+        $this->chain = $chain;
     }
 
     public function getName(): Name
@@ -50,11 +47,6 @@ class BscToken implements Token
         return $this->percent;
     }
 
-    public function getAddress(): Address
-    {
-        return $this->address;
-    }
-
     public function getUrl(): Url
     {
         return $this->url;
@@ -62,28 +54,16 @@ class BscToken implements Token
 
     public function alert(): ?string
     {
-
         return "Name: " . $this->getName()->asString() . PHP_EOL .
-            "Drop percent: -" . $this->getPercent()->asFloat() . '%' . PHP_EOL .
+            "Drop percent: " . $this->getPercent()->asFloat() . '%' . PHP_EOL .
             "Cmc: " . $this->getUrl()->asString() . PHP_EOL .
-            "Poocoin:  " . $this->getPoocoinAddress() . PHP_EOL;
+            "Poocoin:  " . $this->getPoocoinAddress() . PHP_EOL .
+            "Bscscan:  " . $this->getBscscanAddress() . PHP_EOL;
     }
 
     public function setDropPercent(DropPercent $dropPercent)
     {
         $this->percent = $dropPercent;
-    }
-
-    public function setAddress(Address $address)
-    {
-        $this->address = $address;
-        $this->setPoocoinAddress('https://poocoin.app/tokens/' . $address->asString());
-        $this->setBscscanAddress('https://bscscan.com/token/' . $address->asString());
-    }
-
-    public function setChain(Chain $chain)
-    {
-        $this->chain = $chain;
     }
 
     public function setCreated(int $created)
@@ -103,12 +83,7 @@ class BscToken implements Token
 
     public function getPoocoinAddress(): string
     {
-        return $this->poocoinAddress;
-    }
-
-    private function setPoocoinAddress(string $url)
-    {
-        $this->poocoinAddress = $url;
+        return 'https://poocoin.app/tokens/' . $this->address->asString();
     }
 
     public function getChain(): ?Chain
@@ -118,11 +93,6 @@ class BscToken implements Token
 
     public function getBscscanAddress(): string
     {
-        return $this->bscscanAddress;
-    }
-
-    public function setBscscanAddress(string $bscscanAddress): void
-    {
-        $this->bscscanAddress = $bscscanAddress;
+        return 'https://bscscan.com/token/' . $this->address->asString();
     }
 }

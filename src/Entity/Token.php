@@ -1,6 +1,6 @@
 <?php
 
-namespace CrawlerCoinMarketCap\Entity;
+namespace CrawlerCoinGecko\Entity;
 
 interface Token
 {
