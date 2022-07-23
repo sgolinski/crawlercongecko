@@ -47,7 +47,7 @@ class Crawler
             $content = $this->getContent();
             $this->createTokensFromContent($content);
             $this->assignChainAndAddress();
-
+            $this->tokensFromLastCronjob = [];
             FileWriter::writeTokensFromLastCronJob($this->tokensFromCurrentCronjob);
             FileWriter::writeTokensToListTokensAlreadyProcessed($this->allTokensProcessed);
 
@@ -83,7 +83,6 @@ class Crawler
         foreach ($content as $webElement) {
             try {
                 assert($webElement instanceof RemoteWebElement);
-
                 $percent = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(4)'))
                     ->getText();
                 $percent = DropPercent::fromFloat((float)$percent);
@@ -158,7 +157,6 @@ class Crawler
                     ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
                     ->getAttribute('data-chain-id');
 
-
                 if ($address != '' && $chain == '56') {
 
                     $chain = Chain::fromString('bsc');
@@ -209,7 +207,6 @@ class Crawler
         }
         return null;
     }
-
 
     public function getTokensWithInformation(): array
     {
