@@ -45,8 +45,8 @@ class Crawler
             $this->createTokensFromContent($content);
             $this->assignChainAndAddress();
 
-            FileWriter::write($this->removeOldTokensAndDuplicates());
-            FileWriter::writeAlreadyShown(self::$recordedCoins);
+            FileWriter::write($this->removeOldTokensAndDuplicatesFromLastRoundedTokens());
+            FileWriter::writeAlreadyShown($this->removeDuplicatesFromRecordedTokens());
 
         } catch (Exception $exception) {
             echo $exception->getFile() . ' ' . $exception->getLine() . PHP_EOL;
@@ -193,7 +193,7 @@ class Crawler
         return null;
     }
 
-    private function removeOldTokensAndDuplicates(): array
+    private function removeOldTokensAndDuplicatesFromLastRoundedTokens(): array
     {
         $uniqueArray = [];
         $currentTime = time();
@@ -206,18 +206,44 @@ class Crawler
             foreach ($uniqueArray as $uniqueProve) {
                 if ($token->getName()->asString() === $uniqueProve->getName()->asString()) {
                     if ($currentTime - $token->getCreated() > 7200) {
-                        continue;
+                        break;
                     }
                     if ($token->getCreated() > $uniqueProve->created) {
                         $uniqueProve->setCreated($token->created);
-                        continue;
+                        break;
                     }
+                } else {
+                    $uniqueArray[] = $token;
                 }
             }
-            $uniqueArray[] = $token;
         }
         return $uniqueArray;
+    }
 
+    private function removeDuplicatesFromRecordedTokens(): array
+    {
+        $uniqueArray = [];
+
+        foreach (self::$recordedCoins as $token) {
+
+            assert($token instanceof Token);
+            if (empty($notUnique)) {
+                $uniqueArray[] = $token;
+            }
+
+            foreach ($uniqueArray as $uniqueToken) {
+                if ($token->getName()->asString() === $uniqueToken->getName()->asString()) {
+                    if ($token->getCreated() > $uniqueToken->created) {
+                        $uniqueToken->setCreated($token->created);
+                    }
+                    break;
+                } else {
+                    $uniqueToken[] = $token;
+                }
+            }
+
+        }
+        return $uniqueArray;
     }
 
     public function getTokensWithInformation(): array
