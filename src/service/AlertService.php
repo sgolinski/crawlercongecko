@@ -1,14 +1,13 @@
 <?php
 
-namespace CrawlerCoinGecko;
+namespace CrawlerCoinGecko\service;
 
 use Exception;
-use Maknz\Slack\Attachment;
 use Maknz\Slack\Client as SlackClient;
 use Maknz\Slack\Message;
 
 
-class Coingecko
+class AlertService
 {
     private array $currentRound;
 

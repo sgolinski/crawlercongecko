@@ -83,7 +83,7 @@ class Token
 
         return "Name: " . $this->getName() . PHP_EOL .
             "Drop percent: " . $this->getPercent() . "%" . PHP_EOL .
-            "Coingecko: " . $this->getCoingeckoLink() . PHP_EOL .
+            "AlertService: " . $this->getCoingeckoLink() . PHP_EOL .
             "Poocoin:  " . $this->getPoocoinLink() . PHP_EOL;
 
     }

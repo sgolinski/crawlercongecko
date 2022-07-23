@@ -1,14 +1,14 @@
 <?php
 
-use CrawlerCoinGecko\Coingecko;
-use CrawlerCoinGecko\Crawler;
+use CrawlerCoinGecko\service\AlertService;
+use CrawlerCoinGecko\service\CrawlerService;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 header("Content-Type: text/plain");
 
-$crawler = new Crawler();
-$cmc = new Coingecko();
+$crawler = new CrawlerService();
+$cmc = new AlertService();
 
 $crawler->invoke();
 $currentCoins = $crawler->getReturnArray();
