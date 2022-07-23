@@ -60,6 +60,7 @@ class Crawler
     {
         echo 'Start getting content ' . date('H:i:s', time()) . PHP_EOL;
         $list = null;
+
         try {
             $list = $this->client->getCrawler()
                 ->filter('body > div.container >div:nth-child(7)> div:nth-child(2)')
@@ -94,38 +95,40 @@ class Crawler
                     ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))->getText();
 
                 $name = Name::fromString($name);
+
                 $fromLastRound = $this->checkIfTokenIsNotFromLastRound($name);
 
                 if ($fromLastRound) {
                     continue;
                 }
 
-                $find = $this->checkIfIsNotStored($name);
+                $find = $this->returnTokenIfIsRecorded($name);
 
-                if ($find !== null) {
+                if ($find) {
 
                     $currentTimestamp = time();
                     $find->setDropPercent($percent);
                     $find->setCreated($currentTimestamp);
                     $this->tokensWithInformation[] = $find;
                     self::$lastRoundedCoins[] = $find;
+                    continue;
 
                 } else {
                     $url = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
                         ->findElement(WebDriverBy::tagName('a'))
                         ->getAttribute('href');
                     $url = Url::fromString($url);
-
                     $price = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(3)'))
                         ->getText();
                     $price = str_replace('$', '', $price);
                     $price = Price::fromFloat((float)$price);
-
                     $currentTimestamp = time();
                     $address = Address::fromString('');
                     $chain = Chain::fromString('');
+                    $token = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
 
-                    $this->tokensWithoutInformation[] = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
+                    $this->tokensWithoutInformation[] = $token;
+                    self::$lastRoundedCoins[] = $token;
                 }
             } catch
             (Exception $e) {
@@ -186,10 +189,8 @@ class Crawler
 
     private function checkIfTokenIsNotFromLastRound(Name $name): bool
     {
-
         $currentTime = time();
         foreach (self::$lastRoundedCoins as $showedAlreadyToken) {
-
             if ($showedAlreadyToken->getName()->asString() === $name->asString()) {
                 if ($currentTime - $showedAlreadyToken->getCreated() > 7200) {
                     return false;
@@ -201,7 +202,7 @@ class Crawler
         return false;
     }
 
-    private function checkIfIsNotStored(
+    private function returnTokenIfIsRecorded(
         $name
     ): ?Token
     {
