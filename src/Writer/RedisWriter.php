@@ -2,10 +2,10 @@
 
 namespace CrawlerCoinGecko\Writer;
 
+use CrawlerCoinGecko\Datastore\Redis;
 use CrawlerCoinGecko\Entity\Token;
-use CrawlerCoinGecko\Redis;
 
-class RedisWriter
+class RedisWriter implements Writer
 {
     public static function writeToRedis(array $tokens): void
     {
@@ -17,7 +17,5 @@ class RedisWriter
             }
             Redis::get_redis()->save();
         }
-
     }
-
 }

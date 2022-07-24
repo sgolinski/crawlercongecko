@@ -1,6 +1,6 @@
 <?php
 
-namespace CrawlerCoinGecko;
+namespace CrawlerCoinGecko\Datastore;
 
 use Exception;
 use Predis\Client;

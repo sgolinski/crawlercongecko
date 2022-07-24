@@ -59,14 +59,17 @@ class Crawler
         return $list;
     }
 
-    private function createTokensFromContent(ArrayIterator $content): void
+    private function createTokensFromContent(
+        ArrayIterator $content
+    ): void
     {
         echo 'Start creating tokens from content ' . date('H:i:s', time()) . PHP_EOL;
 
         foreach ($content as $webElement) {
             try {
                 assert($webElement instanceof RemoteWebElement);
-                $percent = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(4)'))
+                $percent = $webElement
+                    ->findElement(WebDriverBy::cssSelector('td:nth-child(4)'))
                     ->getText();
                 $percent = DropPercent::fromFloat((float)$percent);
 
@@ -74,9 +77,12 @@ class Crawler
                     continue;
                 }
 
-                $name = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(1)'))
+                $name = $webElement
+                    ->findElement(WebDriverBy::cssSelector('td:nth-child(1)'))
                     ->findElement(WebDriverBy::tagName('div'))
-                    ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))->getText();
+                    ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))
+                    ->getText();
+
                 $name = Name::fromString($name);
 
                 $token = RedisReader::readTokenByName($name->asString());
@@ -91,18 +97,23 @@ class Crawler
                     $token->setData();
                 } else {
 
-                    $url = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
+                    $url = $webElement
+                        ->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
                         ->findElement(WebDriverBy::tagName('a'))
                         ->getAttribute('href');
                     $url = Url::fromString($url);
 
-                    $price = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(3)'))
+                    $price = $webElement
+                        ->findElement(WebDriverBy::cssSelector('td:nth-child(3)'))
                         ->getText();
+
                     $price = str_replace('$', '', $price);
                     $price = Price::fromFloat((float)$price);
                     $currentTimestamp = time();
+
                     $address = Address::fromString('');
                     $chain = Chain::fromString('');
+
                     $token = Factory::createBscToken(
                         $name,
                         $price,
@@ -144,7 +155,6 @@ class Crawler
                     continue;
                 }
                 $chain = Chain::fromString('bsc');
-
                 $address = $this->client->getCrawler()
                     ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
                     ->getAttribute('data-address');
@@ -164,29 +174,24 @@ class Crawler
                 continue;
             }
         }
-
         echo 'Finish assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
     }
 
-    public
-    function getClient(): PantherClient
+    public function getCurrentScrappedTokens(): array
+    {
+        return $this->currentScrappedTokens;
+    }
+
+    public function getClient(): PantherClient
     {
         return $this->client;
     }
 
-    private
-    function startClient(): void
+    private function startClient(): void
     {
         echo "Start crawling " . date("F j, Y, H:i:s ") . PHP_EOL;
         $this->client = PantherClient::createChromeClient();
         $this->client->start();
         $this->client->get(self::URL);
     }
-
-    public
-    function getCurrentScrappedTokens(): array
-    {
-        return $this->currentScrappedTokens;
-    }
-
 }

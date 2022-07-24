@@ -18,7 +18,7 @@ class Alert
         $this->slack = Factory::createSlackClient(self::HOOK);
     }
 
-    public function sendMessageWhenIsBsc(
+    public function sendMessage(
         array $currentRound
     ): void
     {

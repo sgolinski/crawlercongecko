@@ -2,10 +2,10 @@
 
 namespace CrawlerCoinGecko\Reader;
 
+use CrawlerCoinGecko\Datastore\Redis;
 use CrawlerCoinGecko\Entity\Token;
-use CrawlerCoinGecko\Redis;
 
-class RedisReader
+class RedisReader implements Reader
 {
     public static function readTokenByName(string $name): ?Token
     {
