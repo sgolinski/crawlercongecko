@@ -4,15 +4,16 @@ namespace CrawlerCoinGecko\Service;
 
 use ArrayIterator;
 use CrawlerCoinGecko\Factory;
-use CrawlerCoinGecko\Reader\FileReader;
+use CrawlerCoinGecko\Reader\RedisReader;
+use CrawlerCoinGecko\Redis;
 use CrawlerCoinGecko\ValueObjects\Address;
 use CrawlerCoinGecko\ValueObjects\Chain;
 use CrawlerCoinGecko\ValueObjects\DropPercent;
 use CrawlerCoinGecko\ValueObjects\Name;
 use CrawlerCoinGecko\ValueObjects\Price;
 use CrawlerCoinGecko\ValueObjects\Url;
-use CrawlerCoinGecko\Writer\FileWriter;
 use CrawlerCoinGecko\Entity\Token;
+use CrawlerCoinGecko\Writer\RedisWriter;
 use Exception;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
@@ -22,23 +23,9 @@ class Crawler
 {
     private PantherClient $client;
 
-    private array $tokensFromLastCronjob;
-
-    private array $tokensWithInformation = [];
-
-    private array $tokensWithoutInformation = [];
-
-    public array $tokensFromCurrentCronjob = [];
-
-    public array $allTokensProcessed;
+    private array $currentScrappedTokens = [];
 
     private const URL = 'https://www.coingecko.com/en/crypto-gainers-losers?time=h1';
-
-    public function __construct()
-    {
-        $this->tokensFromLastCronjob = FileReader::readTokensFromLastCronJob();
-        $this->allTokensProcessed = FileReader::readTokensAlreadyProcessed();
-    }
 
     public function invoke(): void
     {
@@ -47,9 +34,6 @@ class Crawler
             $content = $this->getContent();
             $this->createTokensFromContent($content);
             $this->assignChainAndAddress();
-            $this->tokensFromLastCronjob = [];
-            FileWriter::writeTokensFromLastCronJob($this->tokensFromCurrentCronjob);
-            FileWriter::writeTokensToListTokensAlreadyProcessed($this->allTokensProcessed);
 
         } catch (Exception $exception) {
             echo $exception->getFile() . ' ' . $exception->getLine() . PHP_EOL;
@@ -66,7 +50,7 @@ class Crawler
         try {
             $list = $this->client->getCrawler()
                 ->filter('body > div.container >div:nth-child(7)> div:nth-child(2)')
-                ->filter('#gecko-table-all > tbody > tr:nth-child(-n+10)')
+                ->filter('#gecko-table-all > tbody > tr:nth-child(-n+15)')
                 ->getIterator();
 
         } catch (Exception $exception) {
@@ -80,6 +64,7 @@ class Crawler
     private function createTokensFromContent(ArrayIterator $content): void
     {
         echo 'Start creating tokens from content ' . date('H:i:s', time()) . PHP_EOL;
+
         foreach ($content as $webElement) {
             try {
                 assert($webElement instanceof RemoteWebElement);
@@ -87,7 +72,7 @@ class Crawler
                     ->getText();
                 $percent = DropPercent::fromFloat((float)$percent);
 
-                if ($percent->asFloat() > -15.0) {
+                if ($percent->asFloat() > -19.0) {
                     continue;
                 }
 
@@ -96,27 +81,24 @@ class Crawler
                     ->findElement(WebDriverBy::cssSelector('div:nth-child(1)'))->getText();
                 $name = Name::fromString($name);
 
-                $tokenFromLastRound = $this->returnTokenIfIsFromLastCronjob($name);
+                $token = RedisReader::readTokenByName($name->asString());
 
-                if ($tokenFromLastRound !== null) {
-                    $this->tokensFromCurrentCronjob[] = $tokenFromLastRound;
-                    continue;
-                }
-
-                $find = $this->returnTokenIfIsRecorded($name);
-
-                if ($find !== null) {
+                if ($token !== null) {
                     $currentTimestamp = time();
-                    $find->setDropPercent($percent);
-                    $find->setCreated($currentTimestamp);
-                    $this->tokensWithInformation[] = $find;
-                    $this->tokensFromCurrentCronjob[] = $find;
+                    if ($currentTimestamp - $token->getCreated() < 3600) {
+                        continue;
+                    }
+                    $token->setDropPercent($percent);
+                    $token->setCreated($currentTimestamp);
+                    $token->setData();
 
                 } else {
+
                     $url = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
                         ->findElement(WebDriverBy::tagName('a'))
                         ->getAttribute('href');
                     $url = Url::fromString($url);
+
                     $price = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(3)'))
                         ->getText();
                     $price = str_replace('$', '', $price);
@@ -124,12 +106,13 @@ class Crawler
                     $currentTimestamp = time();
                     $address = Address::fromString('');
                     $chain = Chain::fromString('');
-                    $this->tokensWithoutInformation[] = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
 
+                    $token = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
                 }
+                $this->currentScrappedTokens[] = $token;
             } catch
             (Exception $e) {
-                echo 'Error when crawl information ' . $e->getMessage() . PHP_EOL;
+                echo 'Error when crawl information about Token ' . $name->asString() . " " . $e->getMessage() . PHP_EOL;
                 continue;
             }
         }
@@ -140,17 +123,20 @@ class Crawler
     {
         echo 'Start assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
 
-        foreach ($this->tokensWithoutInformation as $token) {
+        foreach ($this->currentScrappedTokens as $token) {
 
             try {
                 assert($token instanceof Token);
+                if ($token->isComplete()) {
+                    continue;
+                }
+
                 $this->client->get($token->getUrl()->asString());
                 $this->client->refreshCrawler();
 
                 $address = $this->client->getCrawler()
                     ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
                     ->getAttribute('data-address');
-
                 $address = Address::fromString($address);
 
                 $chain = $this->client->getCrawler()
@@ -158,59 +144,20 @@ class Crawler
                     ->getAttribute('data-chain-id');
 
                 if ($address != '' && $chain == '56') {
-
                     $chain = Chain::fromString('bsc');
-
-                    $newToken = Factory::createBscToken(
-                        $token->getName(),
-                        $token->getPrice(),
-                        $token->getPercent(),
-                        $token->getUrl(),
-                        $address,
-                        $token->getCreated(),
-                        $chain
-                    );
-
-                    $this->tokensWithInformation[] = $newToken;
-                    $this->tokensFromCurrentCronjob[] = $newToken;
-                    $this->allTokensProcessed[] = $newToken;
+                    $token->setAddress($address);
+                    $token->setChain($chain);
+                    $token->setData();
+                    $token->setPoocoinAddress($address);
+                    $token->setData();
+                    RedisWriter::writeToRedis($token);
                 }
             } catch (Exception $exception) {
                 continue;
             }
         }
-        $this->tokensWithoutInformation = [];
+
         echo 'Finish assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
-    }
-
-    private function returnTokenIfIsFromLastCronjob(
-        Name $name
-    ): ?Token
-    {
-        foreach ($this->tokensFromLastCronjob as $showedAlreadyToken) {
-            if ($showedAlreadyToken->getName()->asString() === $name->asString()) {
-                return $showedAlreadyToken;
-            }
-        }
-        return null;
-    }
-
-    private function returnTokenIfIsRecorded(
-        $name
-    ): ?Token
-    {
-        foreach ($this->allTokensProcessed as $recordedToken) {
-            assert($recordedToken instanceof Token);
-            if ($recordedToken->getName()->asString() === $name->asString()) {
-                return $recordedToken;
-            }
-        }
-        return null;
-    }
-
-    public function getTokensWithInformation(): array
-    {
-        return $this->tokensWithInformation;
     }
 
     public function getClient(): PantherClient
@@ -224,6 +171,11 @@ class Crawler
         $this->client = PantherClient::createChromeClient();
         $this->client->start();
         $this->client->get(self::URL);
+    }
+
+    public function getCurrentScrappedTokens(): array
+    {
+        return $this->currentScrappedTokens;
     }
 
 }

@@ -18,6 +18,9 @@ class BscToken implements Token
     public ?Address $address;
     public Url $url;
     public int $created;
+    private bool $completeData;
+    private string $poocoinAddress;
+
 
     public function __construct(
         Name        $name,
@@ -26,7 +29,8 @@ class BscToken implements Token
         Url         $url,
         Address     $address,
         int         $created,
-        Chain       $chain)
+        Chain       $chain
+    )
     {
         $this->name = $name;
         $this->price = $price;
@@ -35,6 +39,8 @@ class BscToken implements Token
         $this->address = $address;
         $this->created = $created;
         $this->chain = $chain;
+        $this->completeData = false;
+        $this->poocoinAddress = 'https://poocoin.app/tokens/';
     }
 
     public function getName(): Name
@@ -57,7 +63,10 @@ class BscToken implements Token
         return "Name: " . $this->getName()->asString() . PHP_EOL .
             "Drop percent: " . $this->getPercent()->asFloat() . '%' . PHP_EOL .
             "Coingecko: " . $this->getUrl()->asString() . PHP_EOL .
-            "Poocoin:  " . $this->getPoocoinAddress() . PHP_EOL;
+            "Address: " . $this->getAddress()->asString() . PHP_EOL .
+            "Poocoin:  " . $this->getPoocoinAddress() . PHP_EOL .
+            'Chain: ' . $this->getChain()->asString() . PHP_EOL .
+            'Scrapped with Redis';
     }
 
     public function setDropPercent(DropPercent $dropPercent)
@@ -82,7 +91,12 @@ class BscToken implements Token
 
     public function getPoocoinAddress(): string
     {
-        return 'https://poocoin.app/tokens/' . $this->address->asString();
+        return $this->poocoinAddress;
+    }
+
+    public function setPoocoinAddress(Address $address): void
+    {
+        $this->poocoinAddress .= $this->address->asString();
     }
 
     public function getChain(): ?Chain
@@ -90,8 +104,29 @@ class BscToken implements Token
         return $this->chain;
     }
 
-    public function getBscscanAddress(): string
+
+    public function isComplete(): bool
     {
-        return 'https://bscscan.com/token/' . $this->address->asString();
+        return $this->completeData;
+    }
+
+    public function setData(): void
+    {
+        $this->completeData = true;
+    }
+
+    public function setAddress(Address $address)
+    {
+        $this->address = $address;
+    }
+
+    public function setChain(Chain $chain)
+    {
+        $this->chain = $chain;
+    }
+
+    private function getAddress(): Address
+    {
+        return $this->address;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use CrawlerCoinGecko\Factory;
+use Predis\Client;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -10,7 +11,8 @@ $crawler = Factory::createCrawlerService();
 $cmc = Factory::createAlertService();
 
 $crawler->invoke();
-$currentCoins = $crawler->getTokensWithInformation();
+$currentCoins = $crawler->getCurrentScrappedTokens();
+
 
 if (empty($currentCoins)) {
     $crawler->getClient()->quit();

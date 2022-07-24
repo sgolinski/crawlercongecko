@@ -2,7 +2,7 @@ version: "3.7"
 
 networks:
   coingecko:
-    external: true
+    driver: "bridge"
 
 services:
   php-cli:
@@ -12,5 +12,15 @@ services:
     volumes:
       - ../:/mnt/app
     restart: always
+    networks:
+      - coingecko
+    links:
+      - redis
+
+  redis:
+    image: redis:4.0
+    container_name: app_redis
+    ports:
+      - "6382:6379"
     networks:
       - coingecko
