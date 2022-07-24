@@ -50,7 +50,7 @@ class Crawler
         try {
             $list = $this->client->getCrawler()
                 ->filter('body > div.container >div:nth-child(7)> div:nth-child(2)')
-                ->filter('#gecko-table-all > tbody > tr:nth-child(-n+15)')
+                ->filter('#gecko-table-all > tbody > tr:nth-child(-n+10)')
                 ->getIterator();
 
         } catch (Exception $exception) {
