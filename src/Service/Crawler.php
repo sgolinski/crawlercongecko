@@ -140,11 +140,9 @@ class Crawler
                 $chain = $this->client->getCrawler()
                     ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
                     ->getAttribute('data-chain-id');
-
                 if ($chain !== '56') {
                     continue;
                 }
-
                 $chain = Chain::fromString('bsc');
 
                 $address = $this->client->getCrawler()
@@ -154,18 +152,15 @@ class Crawler
                 if ($address === null) {
                     continue;
                 }
-
                 $address = Address::fromString($address);
+                $token->setAddress($address);
+                $token->setChain($chain);
+                $token->setData();
+                $token->setPoocoinAddress($address);
+                $token->setData();
 
-                if ($address != '' && $chain == '56') {
-                    $token->setAddress($address);
-                    $token->setChain($chain);
-                    $token->setData();
-                    $token->setPoocoinAddress($address);
-                    $token->setData();
-
-                }
-            } catch (Exception $exception) {
+            } catch
+            (Exception $exception) {
                 continue;
             }
         }
@@ -173,12 +168,14 @@ class Crawler
         echo 'Finish assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
     }
 
-    public function getClient(): PantherClient
+    public
+    function getClient(): PantherClient
     {
         return $this->client;
     }
 
-    private function startClient(): void
+    private
+    function startClient(): void
     {
         echo "Start crawling " . date("F j, Y, H:i:s ") . PHP_EOL;
         $this->client = PantherClient::createChromeClient();
@@ -186,7 +183,8 @@ class Crawler
         $this->client->get(self::URL);
     }
 
-    public function getCurrentScrappedTokens(): array
+    public
+    function getCurrentScrappedTokens(): array
     {
         return $this->currentScrappedTokens;
     }

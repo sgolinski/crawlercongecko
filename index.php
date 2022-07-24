@@ -23,6 +23,6 @@ if (empty($currentCoins)) {
 $cmc->sendMessageWhenIsBsc($currentCoins);
 
 echo 'Downloading information about large movers from last hour ' . date('H:i:s') . PHP_EOL;
-echo 'Start saving to Redis' . date('H:i:s') . PHP_EOL;
+echo 'Start saving to Redis ' . date('H:i:s') . PHP_EOL;
 RedisWriter::writeToRedis($currentCoins);
 echo 'Finish saving to Redis ' . date('H:i:s') . PHP_EOL;
