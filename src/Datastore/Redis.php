@@ -15,7 +15,7 @@ class Redis
     {
         try {
             $redis = new Client([
-                'host' => 'app_redis' // docker container name, app_redis
+                'host' => 'coingecko_redis' // docker container name, app_redis
             ]);
         } catch (Exception $exception) {
             echo 'Not connected';
