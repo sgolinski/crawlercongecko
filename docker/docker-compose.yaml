@@ -29,8 +29,8 @@ services:
       - '--save 60 10000'
       - '--maxmemory ${REDIS_MAXMEM:-50mb}'
     volumes:
-      - ./docker/redis/data:/data
+      - ./redis/data:/data
     ports:
-      - "6382:6379"
+      - "6382:6380"
     networks:
       - coingecko
