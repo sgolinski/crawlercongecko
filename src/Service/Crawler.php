@@ -172,7 +172,7 @@ class Crawler
 
     private function startClient(): void
     {
-        echo "Start crawling " . date("F j, Y, 'H:i:s ") . PHP_EOL;
+        echo "Start crawling " . date("F j, Y, H:i:s ") . PHP_EOL;
         $this->client = PantherClient::createChromeClient();
         $this->client->start();
         $this->client->get(self::URL);
