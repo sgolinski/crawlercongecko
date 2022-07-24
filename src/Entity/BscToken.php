@@ -106,7 +106,6 @@ class BscToken implements Token
         return $this->chain;
     }
 
-
     public function isComplete(): bool
     {
         return $this->completeData;
