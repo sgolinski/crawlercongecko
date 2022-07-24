@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="chang logic to remove bug">
-      <change beforePath="$PROJECT_DIR$/src/Service/Crawler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Crawler.php" afterDir="false" />
+    <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="change to 10 childrens at once">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Writer/RedisWriter.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Writer/RedisWriter.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,7 +137,7 @@
       <workItem from="1658588427861" duration="6132000" />
       <workItem from="1658609048281" duration="4792000" />
       <workItem from="1658615143991" duration="1882000" />
-      <workItem from="1658649748166" duration="12109000" />
+      <workItem from="1658649748166" duration="23840000" />
     </task>
     <task id="LOCAL-00001" summary="chang logic to remove bug">
       <created>1658614175950</created>
@@ -145,7 +146,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658614175950</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="change to 10 childrens at once">
+      <created>1658661877909</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1658661877909</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,6 +172,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="chang logic to remove bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="chang logic to remove bug" />
+    <MESSAGE value="change to 10 childrens at once" />
+    <option name="LAST_COMMIT_MESSAGE" value="change to 10 childrens at once" />
   </component>
 </project>

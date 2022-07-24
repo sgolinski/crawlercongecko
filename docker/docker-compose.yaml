@@ -20,6 +20,17 @@ services:
   redis:
     image: redis:4.0
     container_name: app_redis
+    restart: always
+    command:
+      - 'redis-server'
+      - '--loglevel ${REDIS_LOGLEVEL:-warning}'
+      - '--databases 2'
+      - '--save 900 1'
+      - '--save 300 10'
+      - '--save 60 10000'
+      - '--maxmemory ${REDIS_MAXMEM:-50mb}'
+    volumes:
+      - ./docker/redis/data:/data
     ports:
       - "6382:6379"
     networks:
