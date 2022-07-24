@@ -33,4 +33,6 @@ interface Token
     public function setChain(Chain $chain);
 
     public function setPoocoinAddress(Address $address): void;
+
+    public function isProcessed(): bool;
 }

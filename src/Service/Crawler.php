@@ -5,7 +5,6 @@ namespace CrawlerCoinGecko\Service;
 use ArrayIterator;
 use CrawlerCoinGecko\Factory;
 use CrawlerCoinGecko\Reader\RedisReader;
-use CrawlerCoinGecko\Redis;
 use CrawlerCoinGecko\ValueObjects\Address;
 use CrawlerCoinGecko\ValueObjects\Chain;
 use CrawlerCoinGecko\ValueObjects\DropPercent;
@@ -13,7 +12,6 @@ use CrawlerCoinGecko\ValueObjects\Name;
 use CrawlerCoinGecko\ValueObjects\Price;
 use CrawlerCoinGecko\ValueObjects\Url;
 use CrawlerCoinGecko\Entity\Token;
-use CrawlerCoinGecko\Writer\RedisWriter;
 use Exception;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
@@ -91,7 +89,6 @@ class Crawler
                     $token->setDropPercent($percent);
                     $token->setCreated($currentTimestamp);
                     $token->setData();
-
                 } else {
 
                     $url = $webElement->findElement(WebDriverBy::cssSelector('td:nth-child(2)'))
@@ -124,27 +121,35 @@ class Crawler
         echo 'Start assigning chain and address ' . date('H:i:s', time()) . PHP_EOL;
 
         foreach ($this->currentScrappedTokens as $token) {
-
             try {
                 assert($token instanceof Token);
                 if ($token->isComplete()) {
                     continue;
                 }
-
                 $this->client->get($token->getUrl()->asString());
                 $this->client->refreshCrawler();
-
-                $address = $this->client->getCrawler()
-                    ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
-                    ->getAttribute('data-address');
-                $address = Address::fromString($address);
 
                 $chain = $this->client->getCrawler()
                     ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
                     ->getAttribute('data-chain-id');
 
+                if ($chain !== '56') {
+                    continue;
+                }
+
+                $chain = Chain::fromString('bsc');
+
+                $address = $this->client->getCrawler()
+                    ->filter('div.coin-link-row.tw-mb-0 > div > div > img ')
+                    ->getAttribute('data-address');
+
+                if ($address === null) {
+                    continue;
+                }
+
+                $address = Address::fromString($address);
+
                 if ($address != '' && $chain == '56') {
-                    $chain = Chain::fromString('bsc');
                     $token->setAddress($address);
                     $token->setChain($chain);
                     $token->setData();

@@ -20,6 +20,7 @@ class BscToken implements Token
     public int $created;
     private bool $completeData;
     private string $poocoinAddress;
+    private bool $processed;
 
 
     public function __construct(
@@ -29,7 +30,8 @@ class BscToken implements Token
         Url         $url,
         Address     $address,
         int         $created,
-        Chain       $chain
+        Chain       $chain,
+        bool        $processed
     )
     {
         $this->name = $name;
@@ -40,6 +42,7 @@ class BscToken implements Token
         $this->created = $created;
         $this->chain = $chain;
         $this->completeData = false;
+        $this->processed = $processed;
         $this->poocoinAddress = 'https://poocoin.app/tokens/';
     }
 
@@ -128,5 +131,15 @@ class BscToken implements Token
     private function getAddress(): Address
     {
         return $this->address;
+    }
+
+    public function isProcessed(): bool
+    {
+        return $this->processed;
+    }
+
+    public function setProcessed(): bool
+    {
+        $this->processed = true;
     }
 }

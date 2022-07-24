@@ -10,7 +10,9 @@ class RedisWriter
     public static function writeToRedis(array $tokens): void
     {
         foreach ($tokens as $token) {
-            Redis::get_redis()->set($token->getName()->asString(), serialize($token));
+            if (!$token->isProccessed()) {
+                Redis::get_redis()->set($token->getName()->asString(), serialize($token));
+            }
         }
 
     }
