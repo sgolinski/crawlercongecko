@@ -82,7 +82,7 @@ class Crawler
                 $name = Name::fromString($name);
 
                 $token = RedisReader::readTokenByName($name->asString());
-
+                var_dump($token);
                 if ($token !== null) {
                     $currentTimestamp = time();
                     if ($currentTimestamp - $token->getCreated() < 3600) {

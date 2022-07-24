@@ -5,24 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="chang logic to remove bug">
-      <change afterPath="$PROJECT_DIR$/src/Reader/RedisReader.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Redis.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Writer/RedisWriter.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/crawlercongecko.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/crawlercongecko.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/BscToken.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/BscToken.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Token.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Token.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Service/Crawler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Crawler.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tokens_already_recorded.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tokens_already_recorded.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_static.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_static.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/installed.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/installed.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/installed.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/installed.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +136,7 @@
       <workItem from="1658588427861" duration="6132000" />
       <workItem from="1658609048281" duration="4792000" />
       <workItem from="1658615143991" duration="1882000" />
-      <workItem from="1658649748166" duration="5519000" />
+      <workItem from="1658649748166" duration="12109000" />
     </task>
     <task id="LOCAL-00001" summary="chang logic to remove bug">
       <created>1658614175950</created>
