@@ -11,7 +11,7 @@ class RedisWriter
     {
         foreach ($tokens as $token) {
             assert($token instanceof Token);
-            if (!$token->isProcessed()()) {
+            if (!$token->isProcessed()) {
                 $token->setProcessed();
                 Redis::get_redis()->set($token->getName()->asString(), serialize($token));
             }
