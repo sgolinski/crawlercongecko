@@ -2,6 +2,7 @@
 
 namespace CrawlerCoinGecko\Writer;
 
+use CrawlerCoinGecko\Entity\Token;
 use CrawlerCoinGecko\Redis;
 
 class RedisWriter
@@ -9,7 +10,8 @@ class RedisWriter
     public static function writeToRedis(array $tokens): void
     {
         foreach ($tokens as $token) {
-            if (!$token->isProccessed()) {
+            assert($token instanceof Token);
+            if (!$token->isProcessed()()) {
                 $token->setProcessed();
                 Redis::get_redis()->set($token->getName()->asString(), serialize($token));
             }
