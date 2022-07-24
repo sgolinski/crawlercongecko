@@ -88,13 +88,7 @@ class Crawler
                 $token = RedisReader::readTokenByName($name->asString());
 
                 if ($token !== null) {
-                    $currentTimestamp = time();
-                    if ($currentTimestamp - $token->getCreated() < 3600) {
-                        continue;
-                    }
-                    $token->setDropPercent($percent);
-                    $token->setCreated($currentTimestamp);
-                    $token->setData();
+                    continue;
                 } else {
 
                     $url = $webElement
