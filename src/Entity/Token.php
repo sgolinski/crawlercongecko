@@ -35,4 +35,7 @@ interface Token
     public function setPoocoinAddress(Address $address): void;
 
     public function isProcessed(): bool;
+
+    public function setProcessed(): void;
+
 }

@@ -103,13 +103,21 @@ class Crawler
                     $currentTimestamp = time();
                     $address = Address::fromString('');
                     $chain = Chain::fromString('');
-
-                    $token = Factory::createBscToken($name, $price, $percent, $url, $address, $currentTimestamp, $chain);
+                    $token = Factory::createBscToken(
+                        $name,
+                        $price,
+                        $percent,
+                        $url,
+                        $address,
+                        $currentTimestamp,
+                        $chain,
+                        false
+                    );
                 }
                 $this->currentScrappedTokens[] = $token;
             } catch
             (Exception $e) {
-                echo 'Error when crawl information about Token ' . $name->asString() . " " . $e->getMessage() . PHP_EOL;
+                echo 'Error when crawl information about Token ' . $e->getMessage() . PHP_EOL;
                 continue;
             }
         }

@@ -22,7 +22,6 @@ class BscToken implements Token
     private string $poocoinAddress;
     private bool $processed;
 
-
     public function __construct(
         Name        $name,
         Price       $price,
@@ -138,7 +137,7 @@ class BscToken implements Token
         return $this->processed;
     }
 
-    public function setProcessed(): bool
+    public function setProcessed(): void
     {
         $this->processed = true;
     }
