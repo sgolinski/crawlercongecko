@@ -150,7 +150,7 @@ class Crawler
                     $token->setData();
                     $token->setPoocoinAddress($address);
                     $token->setData();
-                    RedisWriter::writeToRedis($token);
+
                 }
             } catch (Exception $exception) {
                 continue;

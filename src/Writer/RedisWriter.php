@@ -7,9 +7,11 @@ use CrawlerCoinGecko\Redis;
 
 class RedisWriter
 {
-    public static function writeToRedis(Token $token): void
+    public static function writeToRedis(array $tokens): void
     {
-        Redis::get_redis()->set($token->getName()->asString(), serialize($token));
+        foreach ($tokens as $token) {
+            Redis::get_redis()->set($token->getName()->asString(), serialize($token));
+        }
 
     }
 
