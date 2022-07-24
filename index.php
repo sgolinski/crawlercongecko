@@ -2,7 +2,8 @@
 
 use CrawlerCoinGecko\Factory;
 use CrawlerCoinGecko\Writer\RedisWriter;
-use Predis\Client;
+use \CrawlerCoinGecko\Datastore\Redis;
+
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -23,5 +24,6 @@ if (empty($currentCoins)) {
 $cmc->sendMessage($currentCoins);
 echo 'Downloading information about large movers from last hour ' . date('H:i:s') . PHP_EOL;
 echo 'Start saving to Redis ' . date('H:i:s') . PHP_EOL;
+var_dump(Redis::get_redis()->dbsize());
 RedisWriter::writeToRedis($currentCoins);
 echo 'Finish saving to Redis ' . date('H:i:s') . PHP_EOL;

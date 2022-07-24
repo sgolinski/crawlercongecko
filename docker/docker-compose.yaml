@@ -11,13 +11,12 @@ services:
       context: ./..
     volumes:
       - ../:/mnt/app
-    restart: always
     networks:
       - coingecko
     links:
-      - redis
+      - cg-redis
 
-  redis:
+  cg-redis:
     image: redis:4.0
     container_name: app_redis
     restart: always
