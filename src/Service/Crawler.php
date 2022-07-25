@@ -32,7 +32,7 @@ class Crawler
             $content = $this->getContent();
             $this->createTokensFromContent($content);
             $this->assignChainAndAddress();
-
+            $this->getClient()->restart();
         } catch (Exception $exception) {
             echo $exception->getFile() . ' ' . $exception->getLine() . PHP_EOL;
         } finally {

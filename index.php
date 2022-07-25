@@ -11,6 +11,7 @@ header("Content-Type: text/plain");
 
 $crawler = Factory::createCrawlerService();
 $cmc = Factory::createAlertService();
+$size = Redis::get_redis()->dbsize();
 
 try {
     $crawler->invoke();
@@ -20,7 +21,9 @@ try {
 $currentCoins = $crawler->getCurrentScrappedTokens();
 
 if (empty($currentCoins)) {
-    $crawler->getClient()->quit();
+    if ($size > 300) {
+        Redis::get_redis()->flushall();
+    }
     die('Nothing to show' . PHP_EOL);
 }
 
@@ -29,3 +32,5 @@ echo 'Downloading information about large movers from last hour ' . date('H:i:s'
 echo 'Start saving to Redis ' . date('H:i:s') . PHP_EOL;
 RedisWriter::writeToRedis($currentCoins);
 echo 'Finish saving to Redis ' . date('H:i:s') . PHP_EOL;
+
+$size = Redis::get_redis()->dbsize();
