@@ -4,7 +4,6 @@ use CrawlerCoinGecko\Factory;
 use CrawlerCoinGecko\Writer\RedisWriter;
 use \CrawlerCoinGecko\Datastore\Redis;
 
-
 require_once __DIR__ . '/vendor/autoload.php';
 
 header("Content-Type: text/plain");
@@ -33,4 +32,3 @@ echo 'Start saving to Redis ' . date('H:i:s') . PHP_EOL;
 RedisWriter::writeToRedis($currentCoins);
 echo 'Finish saving to Redis ' . date('H:i:s') . PHP_EOL;
 
-$size = Redis::get_redis()->dbsize();
