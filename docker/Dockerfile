@@ -8,12 +8,12 @@ ENV PANTHER_CHROME_ARGUMENTS='--disable-dev-shm-usage'
 COPY /opcache.ini /usr/local/etc/php/conf.d/
 
 RUN apk add libzip-dev libzip zip libxml2-dev \
-    && docker-php-ext-install zip xml \
+    && docker-php-ext-install zip xml
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions sockets gd \
+    install-php-extensions sockets gd
 
 RUN apk add --no-cache chromium chromium-chromedriver
 ARG GECKODRIVER_VERSION=0.30.0

@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb6e61de-d93d-457b-a98b-2ed5cf3bbb96" name="Changes" comment="change to 10 childrens at once">
-      <change beforePath="$PROJECT_DIR$/src/Reader/RedisReader.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Reader/RedisReader.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +139,7 @@
       <workItem from="1658609048281" duration="4792000" />
       <workItem from="1658615143991" duration="1882000" />
       <workItem from="1658649748166" duration="23840000" />
-      <workItem from="1658680807186" duration="7937000" />
+      <workItem from="1658680807186" duration="10536000" />
     </task>
     <task id="LOCAL-00001" summary="chang logic to remove bug">
       <created>1658614175950</created>

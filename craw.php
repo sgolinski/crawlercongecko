@@ -85,9 +85,9 @@ class Crawler
 
                 $name = Name::fromString($name);
 
-                $token = RedisReader::findKey($name);
+                $token = RedisReader::readTokenByName($name->asString());
 
-                if ($token) {
+                if ($token !== null) {
                     continue;
                 } else {
 
