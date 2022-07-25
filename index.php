@@ -20,7 +20,7 @@ try {
 $currentCoins = $crawler->getCurrentScrappedTokens();
 
 if (empty($currentCoins)) {
-    if ($size > 300) {
+    if (Redis::get_redis()->dbsize() > 300) {
         Redis::get_redis()->flushall();
     }
     die('Nothing to show' . PHP_EOL);
